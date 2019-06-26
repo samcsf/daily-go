@@ -92,7 +92,6 @@ func exampleDeadline() {
 	output:
 		I want to sleep for 10 secs
 		Ooops, you boss wake you up..
-		I m full of energy!!
 	分析：用具体的时间来触发cancel操作
 */
 
