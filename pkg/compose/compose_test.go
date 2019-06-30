@@ -2,44 +2,65 @@ package compose
 
 import (
 	"github.com/samcsf/daily-go/pkg/util"
-	// 	"io/ioutil"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 )
 
 func handlePing(w http.ResponseWriter, req *http.Request) {
-	time.Sleep(500 * time.Millisecond)
+	time.Sleep(300 * time.Millisecond)
 	w.Write([]byte("Pong"))
 }
 
 func duration(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		start := time.Now().Nanosecond() / 1000000
+		start := time.Now()
 		defer func() {
-			log.Printf("Request takes %d ms", time.Now().Nanosecond()/1000000-start)
+			end := time.Now()
+			log.Printf("Request takes %d ms", end.Sub(start).Nanoseconds()/1e6)
 		}()
 		next(w, req)
 		return
 	}
 }
 
-func filter(next http.HandlerFunc) http.HandlerFunc {
+func addHeader(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		log.Printf("Filtered!")
+		w.Header().Add("Happy", "yo")
 		next(w, req)
 		return
 	}
 }
 
 func TestCompose(t *testing.T) {
-	// ts := httptest.NewServer(http.Handler(duration(filter(handlePing))))
-	ts := httptest.NewServer(http.Handler(Compose(duration, filter, handlePing)))
-	defer ts.Close()
+	ts1 := httptest.NewServer(http.Handler(duration(addHeader(handlePing))))
+	defer ts1.Close()
+	ts2 := httptest.NewServer(http.Handler(Compose(duration, addHeader)(handlePing)))
+	defer ts2.Close()
 
-	_, err := http.Get(ts.URL)
+	resp1, err := http.Get(ts1.URL)
 	util.ChkErr(err)
 
+	resp2, err := http.Get(ts2.URL)
+	util.ChkErr(err)
+
+	body1, _ := ioutil.ReadAll(resp1.Body)
+	body2, _ := ioutil.ReadAll(resp2.Body)
+	cmp := strings.Compare(string(body1), string(body2))
+	if cmp != 0 {
+		log.Fatalln("Body not match")
+		t.Fail()
+	}
+
+	header1 := resp1.Header.Get("happy")
+	header2 := resp2.Header.Get("happy")
+	cmp = strings.Compare(header1, header2)
+	if cmp != 0 {
+		log.Fatalln("Header not match")
+		t.Fail()
+	}
 }
