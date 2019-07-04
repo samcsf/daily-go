@@ -1,19 +1,16 @@
-package test
+package util
 
 import (
-	"log"
+	"errors"
+	"fmt"
 	"strings"
-	"testing"
 )
 
-func ChkEqual(a, b interface{}, t *testing.T) {
-	strA, err := a.(string)
-	ChkErr(err)
-	strB, err := b.(string)
-	ChkErr(err)
-	if strings.Compare(a, b) != 0 {
-		log.Println("Compare failed")
-		t.Fail()
+func ChkEqual(expect, actual interface{}) error {
+	strA, _ := expect.(string)
+	strB, _ := actual.(string)
+	if strings.Compare(strA, strB) != 0 {
+		return errors.New(fmt.Sprintf("Expect string: \"%s\", got: \"%s\"", expect, actual))
 	}
-
+	return nil
 }
