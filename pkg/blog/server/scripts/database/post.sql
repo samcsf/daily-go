@@ -1,9 +1,13 @@
-CREATE DATABASE goblog
+CREATE DATABASE goblog;
 
-CREATE TABLE blogs (
-  `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `title` TEXT,
-  `content` TEXT,
-  `create_at` DATETIME,
-  `modified_at` DATETIME,
-)
+USE goblog;
+
+CREATE TABLE posts (
+  id INT AUTO_INCREMENT,
+  title TEXT,
+  content TEXT,
+  create_at DATETIME,
+  modified_at DATETIME,
+  primary key (id)
+);
+
