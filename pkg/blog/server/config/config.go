@@ -8,8 +8,8 @@ import (
 var ServerPort = ":8888"
 
 var MySqlUser = "root"
-var MySqlPass = "root"
-var MySqlAddress = "localhost"
+var MySqlPass = ""
+var MySqlAddress = ""
 var MySqlDB = "goblog"
 var MySqlUrlStr = fmt.Sprintf("%s:%s@%s/%s", MySqlUser, MySqlPass, MySqlAddress, MySqlDB)
 
