@@ -19,3 +19,18 @@ func (mdw *Middlewares) Duration(next http.HandlerFunc) http.HandlerFunc {
 		return
 	}
 }
+
+func (mdw *Middlewares) ErrorHandle(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			err := recover()
+			if err != nil {
+				// if error occured
+				log.Println("Panic caught:", err)
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			}
+		}()
+		next(w, r)
+		return
+	}
+}
