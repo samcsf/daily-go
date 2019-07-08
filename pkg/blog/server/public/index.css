@@ -1,0 +1,21 @@
+.title-container {
+  text-align: right;
+  padding: 5px;
+  font-size: 20px;
+}
+
+.category-container {
+  padding: 20px;
+  background-color: azure;
+}
+
+.content-container {
+  text-align: center;
+  padding: 20px;
+  background-color: lightcyan;
+  min-height: 600px;
+}
+
+.editor-container {
+  padding: 0px;
+}

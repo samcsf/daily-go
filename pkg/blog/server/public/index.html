@@ -1,0 +1,44 @@
+<html>
+  <header>
+    <title>Blog</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <link rel="stylesheet" href="./index.css">
+  </header>
+  <body>
+    <div class="alert alert-success" id="submit-alr-succ" style="float: right;" role="alert">Saved</div>
+    <div class="alert alert-danger" id="submit-alr-fail" role="alert">Save failed</div>
+    <div class="container">
+      <div class="row">
+        <div class="col title-container">Blog</div>
+      </div>
+      <div class="row">
+        <div class="col-2 category-container">
+          <ul class="nav nav-pills flex-column" id="category-list">
+          </ul>
+        </div>
+        <div class="col-10 content-container">
+          <div id="content-text">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col editor-container">
+          <div class="input-group">
+            <input type="text" class="form-control" id="input-title" placeholder="Title">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button" id="submit-button" onclick="onSubmit()">Save</button>
+            </div>
+          </div>
+          <textarea id="editor" cols="30" rows="10"></textarea>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+  <script src="./index.js"></script>
+</html>

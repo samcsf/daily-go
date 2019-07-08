@@ -6,13 +6,13 @@ import (
 	"github.com/samcsf/daily-go/pkg/blog/server/service"
 	"github.com/samcsf/daily-go/pkg/util"
 	"io/ioutil"
-	// "log"
+	"log"
 	"net/http"
 )
 
 type PostController struct{}
 
-func (ctrl *PostController) GetPostList(w http.ResponseWriter, r *http.Request) {
+func (ctrl *PostController) Ping(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hey"))
 }
 
