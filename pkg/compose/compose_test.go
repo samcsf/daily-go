@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -52,15 +53,13 @@ func TestCompose(t *testing.T) {
 	body2, _ := ioutil.ReadAll(resp2.Body)
 	cmp := strings.Compare(string(body1), string(body2))
 	if cmp != 0 {
-		log.Fatalln("Body not match")
+		log.Println("Body not match")
 		t.Fail()
 	}
 
-	header1 := resp1.Header.Get("happy")
-	header2 := resp2.Header.Get("happy")
-	cmp = strings.Compare(header1, header2)
-	if cmp != 0 {
-		log.Fatalln("Header not match")
+	eql := reflect.DeepEqual(resp1.Header, resp2.Header)
+	if !eql {
+		log.Printf("Expect: %v, Got: %v", resp1.Header, resp2.Header)
 		t.Fail()
 	}
 }
