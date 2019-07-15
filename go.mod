@@ -8,6 +8,7 @@ require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang/protobuf v1.3.1
 	github.com/robertkrimen/otto v0.0.0-20180617131154-15f95af6e78d
+	github.com/thedevsaddam/govalidator v1.9.8
 	golang.org/x/net v0.0.0-20190603091049-60506f45cf65
 	golang.org/x/sync v0.0.0-20181108010431-42b317875d0f // indirect
 	golang.org/x/sys v0.0.0-20190602015325-4c4f7f33c9ed // indirect

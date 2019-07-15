@@ -5,8 +5,8 @@ import (
 	"github.com/samcsf/daily-go/pkg/blog/server/model"
 	"github.com/samcsf/daily-go/pkg/blog/server/service"
 	"github.com/samcsf/daily-go/pkg/util"
+	"github.com/thedevsaddam/govalidator"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -33,25 +33,33 @@ func (ctrl *PostController) GetPosts(w http.ResponseWriter, r *http.Request) {
 	posts, err := service.Post.GetPosts()
 	util.ChkErr(err)
 
-	bytes, err := json.Marshal(posts)
+	err = json.NewEncoder(w).Encode(posts)
 	util.ChkErr(err)
-
-	w.Write(bytes)
 }
 
 func (ctrl *PostController) CreatePost(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	util.ChkErr(err)
-
-	var post *model.Post
-	err = json.Unmarshal(body, &post)
-	util.ChkErr(err)
+	rules := govalidator.MapData{
+		"title":   []string{"required"},
+		"content": []string{"required"},
+	}
+	post := &model.Post{}
+	opts := govalidator.Options{
+		Request: r,
+		Rules:   rules,
+		Data:    post,
+	}
+	e := govalidator.New(opts).ValidateJSON()
+	if len(e) > 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		erx := util.H{"validationError": e}
+		w.Header().Set("Content-type", "application/json")
+		json.NewEncoder(w).Encode(erx)
+		return
+	}
 
 	service.Post.SavePost(post)
-	bytes, err := json.Marshal(map[string]int{"ok": 1})
+	err := json.NewEncoder(w).Encode(util.H{"ok": 1})
 	util.ChkErr(err)
-
-	w.Write(bytes)
 }
 
 func (ctrl *PostController) UpdatePost(w http.ResponseWriter, r *http.Request) {
@@ -68,10 +76,8 @@ func (ctrl *PostController) UpdatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	service.Post.UpdatePost(post)
-	bytes, err := json.Marshal(map[string]int{"ok": 1})
+	err = json.NewEncoder(w).Encode(util.H{"ok": 1})
 	util.ChkErr(err)
-
-	w.Write(bytes)
 }
 
 func (ctrl *PostController) DelPost(w http.ResponseWriter, r *http.Request) {
@@ -88,8 +94,6 @@ func (ctrl *PostController) DelPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	service.Post.DelPost(post)
-	bytes, err := json.Marshal(map[string]int{"ok": 1})
+	err = json.NewEncoder(w).Encode(util.H{"ok": 1})
 	util.ChkErr(err)
-
-	w.Write(bytes)
 }
