@@ -18,6 +18,8 @@ func main() {
 	http.Handle("/", fileHandler)
 	http.HandleFunc("/post", d(ctrl.Post.HandlePost))
 
+	config.ReadFromJson()
+
 	log.Println("Blog server started on port", config.ServerPort)
 	err := http.ListenAndServe(config.ServerPort, nil)
 	util.ChkErr(err)

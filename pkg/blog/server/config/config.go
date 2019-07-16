@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/micro/go-micro/config"
 	"os"
 )
 
@@ -18,4 +19,9 @@ func init() {
 	if port != "" {
 		ServerPort = ":" + port
 	}
+}
+
+func ReadFromJson() {
+	config.LoadFile("../config.json")
+	fmt.Println(config.Get("service", "port"))
 }
