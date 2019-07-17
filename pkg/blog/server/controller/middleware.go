@@ -1,10 +1,21 @@
 package controller
 
 import (
-	"log"
+	"github.com/samcsf/daily-go/pkg/util"
+	"github.com/sirupsen/logrus"
 	"net/http"
+	"os"
 	"time"
 )
+
+var log = logrus.New()
+
+func init() {
+	file, err := os.OpenFile("blog_logrus.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	util.ChkErr(err)
+
+	log.Out = file
+}
 
 type Middlewares struct{}
 

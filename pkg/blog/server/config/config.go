@@ -22,6 +22,7 @@ func init() {
 }
 
 func ReadFromJson() {
-	config.LoadFile("../config.json")
-	fmt.Println(config.Get("service", "port"))
+	config.LoadFile("./pkg/blog/server/config.json")
+	config.Get("service")
+	fmt.Println(config.Map()["service"])
 }
