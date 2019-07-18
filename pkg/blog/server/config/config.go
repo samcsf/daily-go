@@ -8,6 +8,7 @@ import (
 
 var ServerPort = ":8888"
 
+var LogTo = "stdout"
 var MySqlUser = "root"
 var MySqlPass = ""
 var MySqlAddress = ""
@@ -18,6 +19,10 @@ func init() {
 	port := os.Getenv("PORT")
 	if port != "" {
 		ServerPort = ":" + port
+	}
+	logto := os.Getenv("LOGTO")
+	if logto != "" {
+		LogTo = logto
 	}
 }
 
