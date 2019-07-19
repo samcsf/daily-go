@@ -27,8 +27,8 @@ func exampleCancel() {
 
 	wg.Add(4)
 	for i := 0; i < 4; i++ {
-		ctx, _ := context.WithCancel(pctx)
-		go func(ctx context.Context, n int) {
+		ctx, cancel := context.WithCancel(pctx)
+		go func(ctx context.Context, cancel context.CancelFunc, n int) {
 			fmt.Printf("Task %d started.\n", n)
 		loop:
 			for {
@@ -44,7 +44,8 @@ func exampleCancel() {
 			}
 			fmt.Printf("Task %d end.\n", n)
 			wg.Done()
-		}(ctx, 4-i)
+			cancel()
+		}(ctx, cancel, 4-i)
 	}
 	// after 3 sec, cancel it
 	go func() {
@@ -73,7 +74,8 @@ func exampleCancel() {
 */
 
 func exampleDeadline() {
-	ctx, _ := context.WithDeadline(context.Background(), time.Now().Add(2*time.Second))
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(2*time.Second))
+	defer cancel()
 	end := make(chan bool)
 	go func(ctx context.Context) {
 		fmt.Println("I want to sleep for 10 secs")
@@ -96,24 +98,20 @@ func exampleDeadline() {
 */
 
 func exampleTimeout() {
-	ctx, _ := context.WithTimeout(context.Background(), 2*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
 	// Timeout context started right after generation
 	time.Sleep(3 * time.Second)
 	end := make(chan bool)
 	go func(ctx context.Context) {
-		select {
-		case <-ctx.Done():
-			fmt.Println("I m full of energy!!")
-			end <- true
-			return
-		default:
-		}
 		fmt.Println("I want to sleep for 10 secs")
 		select {
 		case <-time.After(10 * time.Second):
 			fmt.Println("Wonderful sleep")
 		case <-ctx.Done():
-			fmt.Println("Ooops, your boss wake you up..")
+			fmt.Println("No, I m full of energy!!")
+			end <- true
+			return
 		}
 		end <- true
 	}(ctx)
