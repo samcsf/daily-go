@@ -26,7 +26,7 @@ import (
 	"log"
 	"net"
 
-	pb "github.com/samcsf/daily-go/pkg/grpc-example/helloworld"
+	pb "github.com/samcsf/daily-go/pkg/grpc-example/helloworld/helloworld"
 	"google.golang.org/grpc"
 )
 
