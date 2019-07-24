@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package post;
+
+service PostService {
+  rpc GetPosts () returns (stream Post) {}
+}
+
+message Post {
+  string name = 1;
+  string id = 2        
+  string title = 3;     
+  string content = 4;
+  string create_at = 5;
+  string modified_at = 6;
+}
