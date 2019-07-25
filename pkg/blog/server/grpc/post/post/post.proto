@@ -3,12 +3,15 @@ syntax = "proto3";
 package post;
 
 service PostService {
-  rpc GetPosts () returns (stream Post) {}
+  // 必须要有input type, 如为空需要定义空的类型 
+  rpc GetPosts (Empty) returns (stream Post) {}
 }
+
+message Empty {}
 
 message Post {
   string name = 1;
-  string id = 2        
+  string id = 2;
   string title = 3;     
   string content = 4;
   string create_at = 5;
