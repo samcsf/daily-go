@@ -5,6 +5,9 @@ package post;
 service PostService {
   // 必须要有input type, 如为空需要定义空的类型 
   rpc GetPosts (Empty) returns (stream Post) {}
+  rpc CreatePost (Post) returns (Empty) {}
+  rpc UpdatePost (Post) returns (Empty) {}
+  rpc DeletePost (Post) returns (Empty) {}
 }
 
 message Empty {}

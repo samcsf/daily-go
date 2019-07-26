@@ -1,8 +1,10 @@
 package server
 
 import (
+	"context"
 	"net"
 
+	"github.com/samcsf/daily-go/pkg/blog/server/model"
 	"github.com/samcsf/daily-go/pkg/blog/server/service"
 	"github.com/samcsf/daily-go/pkg/util"
 	"google.golang.org/grpc"
@@ -18,15 +20,49 @@ func (ps *postServer) GetPosts(em *pb.Empty, stream pb.PostService_GetPostsServe
 
 	for _, post := range posts {
 		p := &pb.Post{
-			Title:    post.Title,
-			Content:  post.Content,
-			CreateAt: post.Create_at.String(),
+			Title:      post.Title,
+			Content:    post.Content,
+			CreateAt:   post.Create_at.String(),
+			ModifiedAt: post.Modified_at.String(),
 		}
 		if err := stream.Send(p); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func (ps *postServer) CreatePost(ctx context.Context, post *pb.Post) (*pb.Empty, error) {
+	p := &model.Post{
+		Id:      post.Id,
+		Title:   post.Title,
+		Content: post.Content,
+	}
+
+	service.Post.SavePost(p)
+	return &pb.Empty{}, nil
+}
+
+func (ps *postServer) UpdatePost(ctx context.Context, post *pb.Post) (*pb.Empty, error) {
+	p := &model.Post{
+		Id:      post.Id,
+		Title:   post.Title,
+		Content: post.Content,
+	}
+
+	service.Post.UpdatePost(p)
+	return &pb.Empty{}, nil
+}
+
+func (ps *postServer) DeletePost(ctx context.Context, post *pb.Post) (*pb.Empty, error) {
+	p := &model.Post{
+		Id:      post.Id,
+		Title:   post.Title,
+		Content: post.Content,
+	}
+
+	service.Post.DelPost(p)
+	return &pb.Empty{}, nil
 }
 
 func StartServer() {
