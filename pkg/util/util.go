@@ -18,22 +18,26 @@ func ChkErr(err error) {
 /*
 	打印内存信息
 	MemStats
-		Alloc      从heap中分配的内存, = HeapAlloc
-		TotalAlloc 累计从heap中分配的内存, 与Alloc不同的是free后不会减掉
-		Lookups    runtime累计指针查找次数
-		Mallocs    累计allocate的heap对象数
-		Frees      累计释放的heap对象数，存活heap对象数 = Mallocs - Frees
+		Alloc         从heap中分配的内存, = HeapAlloc
+		TotalAlloc    累计从heap中分配的内存, 与Alloc不同的是free后不会减掉
+		Lookups       runtime累计指针查找次数
+		Mallocs       累计allocate的heap对象数
+		Frees         累计释放的heap对象数，存活heap对象数 = Mallocs - Frees
 
-		HeapSys    heap bytes from os, heapSys = heapIdle + heapInuse
+		HeapSys       heap bytes from os, heapSys = heapIdle + heapInuse
+		PauseTotalNs  累计GC时间(每次GC会停止所有goroutine执行，这个参数可以留意GC对执行的影响)
+		PauseNs[256]  一个256的数组，循环记录每次GC时间，PauseNs[(NumGC+255)%256]取最后GC时间
+		PauseEnd[256] 一个256的数组，循环记录每次GC结束时间
+		NumGC         GC次数
+		NumForcedGC   强制GC次数
 */
-func PrintMem() {
+func PrintMemDetail() {
 	stat := runtime.MemStats{}
 	runtime.ReadMemStats(&stat)
 	log.Printf("Alloc: %5.2f\n", float64(stat.Alloc>>10))
 	log.Printf("TotalAlloc: %5.2f\n", float64(stat.TotalAlloc>>10))
 	log.Printf("Mallocs: %5.2f\n", float64(stat.Mallocs))
 	log.Printf("Frees: %5.2f\n", float64(stat.Alloc))
-	log.Printf("HeapAlloc: %5.2f\n", float64(stat.HeapAlloc>>10))
 	log.Printf("HeapIdle: %5.2f\n", float64(stat.HeapIdle>>10))
 	log.Printf("HeapInuse: %5.2f\n", float64(stat.HeapInuse>>10))
 	log.Printf("NumGC: %5.2f\n", float64(stat.NumGC))
@@ -47,4 +51,10 @@ func PrintMem() {
 	log.Printf("GCSys: %5.2f\n", float64(stat.GCSys>>10))
 	log.Printf("OtherSys: %5.2f\n", float64(stat.OtherSys>>10))
 	log.Println("----------------------------------")
+}
+
+func PrintMem() {
+	stat := runtime.MemStats{}
+	runtime.ReadMemStats(&stat)
+	log.Printf("Alloc: %5.2fk\t TotalAlloc: %5.2fk\t NumGC: %d \n", float64(stat.Alloc>>10), float64(stat.TotalAlloc>>10), stat.NumGC)
 }
