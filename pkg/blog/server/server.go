@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/samcsf/daily-go/pkg/blog/server/config"
 	ctrl "github.com/samcsf/daily-go/pkg/blog/server/controller"
+	grpc "github.com/samcsf/daily-go/pkg/blog/server/grpc/post/server"
 	cps "github.com/samcsf/daily-go/pkg/compose"
 	"github.com/samcsf/daily-go/pkg/util"
 	"log"
@@ -20,6 +21,7 @@ func main() {
 
 	config.ReadFromJson()
 
+	go grpc.StartServer()
 	log.Println("Blog server started on port", config.ServerPort)
 	err := http.ListenAndServe(config.ServerPort, nil)
 	util.ChkErr(err)

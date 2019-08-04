@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"log"
 	"net"
 
 	"github.com/samcsf/daily-go/pkg/blog/server/model"
@@ -32,37 +33,62 @@ func (ps *postServer) GetPosts(em *pb.Empty, stream pb.PostService_GetPostsServe
 	return nil
 }
 
-func (ps *postServer) CreatePost(ctx context.Context, post *pb.Post) (*pb.Empty, error) {
+func (ps *postServer) CreatePost(ctx context.Context, post *pb.Post) (*pb.ExecResult, error) {
 	p := &model.Post{
 		Id:      post.Id,
 		Title:   post.Title,
 		Content: post.Content,
 	}
 
-	service.Post.SavePost(p)
-	return &pb.Empty{}, nil
+	res, err := service.Post.SavePost(p)
+	if err != nil {
+		log.Println("Grpc error when calling SavePost(): %v", err)
+	}
+	lid, _ := res.LastInsertId()
+	rows, _ := res.RowsAffected()
+	return &pb.ExecResult{
+		LastInsertId: lid,
+		RowsAffected: rows,
+	}, nil
 }
 
-func (ps *postServer) UpdatePost(ctx context.Context, post *pb.Post) (*pb.Empty, error) {
+func (ps *postServer) UpdatePost(ctx context.Context, post *pb.Post) (*pb.ExecResult, error) {
 	p := &model.Post{
 		Id:      post.Id,
 		Title:   post.Title,
 		Content: post.Content,
 	}
 
-	service.Post.UpdatePost(p)
-	return &pb.Empty{}, nil
+	res, err := service.Post.UpdatePost(p)
+	if err != nil {
+		log.Println("Grpc error when calling UpdatePost(): %v", err)
+	}
+	lid, _ := res.LastInsertId()
+	rows, _ := res.RowsAffected()
+	return &pb.ExecResult{
+		LastInsertId: lid,
+		RowsAffected: rows,
+	}, nil
+
 }
 
-func (ps *postServer) DeletePost(ctx context.Context, post *pb.Post) (*pb.Empty, error) {
+func (ps *postServer) DeletePost(ctx context.Context, post *pb.Post) (*pb.ExecResult, error) {
 	p := &model.Post{
 		Id:      post.Id,
 		Title:   post.Title,
 		Content: post.Content,
 	}
 
-	service.Post.DelPost(p)
-	return &pb.Empty{}, nil
+	res, err := service.Post.DelPost(p)
+	if err != nil {
+		log.Println("Grpc error when calling DelPost(): %v", err)
+	}
+	lid, _ := res.LastInsertId()
+	rows, _ := res.RowsAffected()
+	return &pb.ExecResult{
+		LastInsertId: lid,
+		RowsAffected: rows,
+	}, nil
 }
 
 func StartServer() {
@@ -70,6 +96,7 @@ func StartServer() {
 	util.ChkErr(err)
 	s := grpc.NewServer()
 	pb.RegisterPostServiceServer(s, &postServer{})
+	log.Println("gRPC server start listening on tcp:50051")
 	err = s.Serve(lis)
 	util.ChkErr(err)
 }

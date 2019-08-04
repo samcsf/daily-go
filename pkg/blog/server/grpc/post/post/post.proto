@@ -5,9 +5,9 @@ package post;
 service PostService {
   // 必须要有input type, 如为空需要定义空的类型 
   rpc GetPosts (Empty) returns (stream Post) {}
-  rpc CreatePost (Post) returns (Empty) {}
-  rpc UpdatePost (Post) returns (Empty) {}
-  rpc DeletePost (Post) returns (Empty) {}
+  rpc CreatePost (Post) returns (ExecResult) {}
+  rpc UpdatePost (Post) returns (ExecResult) {}
+  rpc DeletePost (Post) returns (ExecResult) {}
 }
 
 message Empty {}
@@ -19,4 +19,9 @@ message Post {
   string content = 4;
   string create_at = 5;
   string modified_at = 6;
+}
+
+message ExecResult {
+  int64 lastInsertId = 1;
+  int64 rowsAffected = 2;
 }
