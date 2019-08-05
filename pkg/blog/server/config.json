@@ -1,5 +1,13 @@
 {
     "service": {
-      "port": ":8888"
+      "port": ":8881"
+    },
+    "database": {
+      "mysql": {
+        "user": "root",
+        "pass": "",
+        "address": "",
+        "db": "goblog"
+      }
     }
 }
